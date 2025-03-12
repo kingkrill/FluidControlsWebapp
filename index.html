@@ -108,8 +108,9 @@
             display: flex;
             align-items: center;
             cursor: pointer;
-            padding: 0 5px;
+            padding: 0;
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
 
         .toggle-circle {
@@ -120,6 +121,9 @@
             border-radius: 50%;
             transition: transform 0.3s ease;
             left: 3px;
+            top: 3px;
+            z-index: 2;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         [data-theme="dark"] .toggle-circle {
@@ -129,17 +133,18 @@
         .toggle-icon {
             position: absolute;
             color: var(--bg-secondary);
-            font-size: 14px;
+            font-size: 12px;
             transition: opacity 0.3s ease;
+            z-index: 1;
         }
 
         .sun-icon {
-            left: 7px;
+            left: 10px;
             opacity: 1;
         }
 
         .moon-icon {
-            right: 7px;
+            right: 10px;
             opacity: 0;
         }
 
@@ -417,6 +422,45 @@
             box-shadow: 0 4px 6px var(--shadow);
         }
 
+        /* Power BI styles */
+        .powerbi-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .powerbi-container {
+            width: 100%;
+            height: 500px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px var(--shadow);
+            position: relative;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .loading-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .loading-indicator i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        iframe.powerbi-iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
         .footer {
             text-align: center;
             margin-top: 30px;
@@ -453,6 +497,17 @@
             <p>This platform provides tools to analyze and rate vendor performance using advanced AI technology. Navigate through the menu to access different features.</p>
             <p>Use our AI Chat Bot to get instant answers to your vendor-related questions and gain insights into vendor performance metrics.</p>
             <p>The Graph Plotter tool allows you to visualize vendor performance data and identify trends over time.</p>
+            
+            <!-- Power BI Dashboard Section -->
+            <div class="powerbi-section">
+                <h3>Vendor Performance Dashboard</h3>
+                <div class="powerbi-container" id="powerbi-container">
+                    <!-- Power BI report will be embedded here -->
+                    <div class="loading-indicator">
+                        <i class="fas fa-spinner fa-spin"></i> Loading dashboard...
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="section chatbot-section" id="chatbot-section">
@@ -545,6 +600,11 @@
                     dateRange.style.display = 'none';
                 }
             });
+            
+            // If home is the default section, embed Power BI on page load
+            if (document.getElementById('home-section').style.display !== 'none') {
+                setTimeout(embedPowerBI, 500);
+            }
         });
         
         function showSection(sectionId) {
@@ -566,10 +626,59 @@
             // Add active class to clicked button
             if (sectionId === 'home-section') {
                 document.getElementById('home-btn').classList.add('active');
+                // Small delay to ensure the section is displayed before embedding
+                setTimeout(embedPowerBI, 100);
             } else if (sectionId === 'chatbot-section') {
                 document.getElementById('chat-btn').classList.add('active');
             } else if (sectionId === 'graph-section') {
                 document.getElementById('graph-btn').classList.add('active');
+            }
+        }
+        
+        // Power BI Embedding
+        function embedPowerBI() {
+            // Check if Power BI container exists
+            const container = document.getElementById('powerbi-container');
+            if (!container) return;
+            
+            // Clear loading indicator
+            container.innerHTML = '';
+            
+            // Create iframe for Power BI report
+            const iframe = document.createElement('iframe');
+            iframe.className = 'powerbi-iframe';
+            iframe.title = 'Vendor Performance Dashboard';
+            
+            // Set the source to your Power BI report
+            // Replace this URL with your actual Power BI embed URL
+            iframe.src = 'https://app.powerbi.com/reportEmbed?reportId=YOUR_REPORT_ID&autoAuth=true&embeddedDemo=true';
+            
+            // Add iframe to container
+            container.appendChild(iframe);
+            
+            // Optional: Add message for demo purposes if you don't have a real Power BI embed URL
+            if (iframe.src.includes('YOUR_REPORT_ID')) {
+                // This is a demo message for when you don't have a real Power BI URL
+                container.innerHTML = `
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center;">
+                        <i class="fas fa-chart-bar" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
+                        <h3>Power BI Dashboard Demo</h3>
+                        <p>This is a placeholder for your Power BI dashboard. In a production environment, you would embed your actual Power BI report here.</p>
+                        <p>To embed a real Power BI report, you need:</p>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>A Power BI Pro or Premium account</li>
+                            <li>A published report</li>
+                            <li>Proper authentication setup</li>
+                            <li>The embed URL and report ID</li>
+                        </ul>
+                                                <div style="margin-top: 20px; padding: 15px; background: var(--card-bg); border-radius: 8px; max-width: 500px;">
+                            <code style="color: var(--accent);">
+                                // Sample embed code<br>
+                                iframe.src = 'https://app.powerbi.com/reportEmbed?reportId=YOUR_REPORT_ID&autoAuth=true'
+                            </code>
+                        </div>
+                    </div>
+                `;
             }
         }
         
@@ -960,8 +1069,8 @@
             linePath.setAttribute('stroke-width', '3');
             svg.appendChild(linePath);
             
-                        // Add title
-                        const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            // Add title
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             title.setAttribute('x', width / 2);
             title.setAttribute('y', 20);
             title.setAttribute('text-anchor', 'middle');
