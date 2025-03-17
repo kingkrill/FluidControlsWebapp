@@ -534,14 +534,93 @@
     <script>
         // Add this code to the script section of your dashboard.html file, replacing the existing sendMessage function
 
-// Gemini API configuration
+// Gemini API configuration with your specific key
 const GEMINI_API_KEY = 'AIzaSyB1lu1c7yQRgdHn4NemfE-mNLUrK3Gy68s';
-// Use corsproxy.io as a CORS proxy
-const CORS_PROXY = 'https://corsproxy.io/?';
+
+// Try a different CORS proxy
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
 // API status variables
 let apiAvailable = false;
+
+// Add this to the document ready function
+document.addEventListener('DOMContentLoaded', function() {
+    // Existing code...
+    
+    // Add a test button in the chatbot section for debugging
+    const chatContainer = document.querySelector('.chat-container');
+    const testButton = document.createElement('button');
+    testButton.textContent = 'Test API Connection';
+    testButton.style.marginTop = '10px';
+    testButton.onclick = testApiConnection;
+    chatContainer.parentNode.insertBefore(testButton, chatContainer.nextSibling);
+    
+    // Check API connection
+    checkApiConnection();
+});
+
+// Test API connection with detailed logging
+async function testApiConnection() {
+    const statusText = document.getElementById('api-status-text');
+    statusText.textContent = 'Testing API connection...';
+    
+    try {
+        console.log('Testing API connection...');
+        const encodedUrl = encodeURIComponent(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`);
+        const proxyUrl = `${CORS_PROXY}${encodedUrl}`;
+        
+        console.log('Proxy URL:', proxyUrl);
+        
+        const response = await fetch(proxyUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        parts: [
+                            {
+                                text: "Hello, this is a test message."
+                            }
+                        ]
+                    }
+                ]
+            })
+        });
+        
+        console.log('Response status:', response.status);
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('API response:', data);
+            
+            apiAvailable = true;
+            document.getElementById('api-indicator').className = 'status-indicator status-green';
+            statusText.textContent = 'API Connected - Using Gemini AI';
+            
+            alert('API connection successful! Check console for details.');
+        } else {
+            const errorText = await response.text();
+            console.error('API Error:', errorText);
+            
+            apiAvailable = false;
+            document.getElementById('api-indicator').className = 'status-indicator status-red';
+            statusText.textContent = 'API Error: ' + response.status;
+            
+            alert('API connection failed with status: ' + response.status);
+        }
+    } catch (error) {
+        console.error('API Connection Error:', error);
+        
+        apiAvailable = false;
+        document.getElementById('api-indicator').className = 'status-indicator status-red';
+        statusText.textContent = 'API Connection Error: ' + error.message;
+        
+        alert('API connection error: ' + error.message);
+    }
+}
 
 // Check if API is accessible
 async function checkApiConnection() {
@@ -549,8 +628,13 @@ async function checkApiConnection() {
     const statusText = document.getElementById('api-status-text');
     
     try {
-        // Use a simple test query
-        const response = await fetch(`${CORS_PROXY}${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+        // Encode the URL properly for the proxy
+        const encodedUrl = encodeURIComponent(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`);
+        const proxyUrl = `${CORS_PROXY}${encodedUrl}`;
+        
+        console.log('Checking API connection...');
+        
+        const response = await fetch(proxyUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -567,6 +651,8 @@ async function checkApiConnection() {
                 ]
             })
         });
+        
+        console.log('Check response status:', response.status);
         
         if (response.ok) {
             apiAvailable = true;
@@ -585,14 +671,6 @@ async function checkApiConnection() {
     }
 }
 
-// Call this function when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Existing code...
-    
-    // Check API connection
-    checkApiConnection();
-});
-
 // Chat functionality with Gemini API
 async function sendMessage() {
     const userInput = document.getElementById('user-input');
@@ -609,8 +687,13 @@ async function sendMessage() {
     
     if (apiAvailable) {
         try {
-            // Call Gemini API through CORS proxy
-            const response = await fetch(`${CORS_PROXY}${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+            // Encode the URL properly for the proxy
+            const encodedUrl = encodeURIComponent(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`);
+            const proxyUrl = `${CORS_PROXY}${encodedUrl}`;
+            
+            console.log('Sending message to API...');
+            
+            const response = await fetch(proxyUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -628,25 +711,36 @@ async function sendMessage() {
                 })
             });
             
-            const data = await response.json();
+            console.log('Message response status:', response.status);
             
             // Remove typing indicator
-            document.querySelector('.typing').remove();
+            const typingElement = document.querySelector('.typing');
+            if (typingElement) typingElement.remove();
             
-            // Get response text
-            let botResponse = "I'm sorry, I couldn't process your request at the moment. Please try again later.";
-            
-            if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
-                botResponse = data.candidates[0].content.parts[0].text;
+            if (response.ok) {
+                const data = await response.json();
+                console.log('API response data:', data);
+                
+                // Get response text
+                let botResponse = "I'm sorry, I couldn't process your request at the moment. Please try again later.";
+                
+                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
+                    botResponse = data.candidates[0].content.parts[0].text;
+                }
+                
+                // Add bot response to chat
+                addMessage(botResponse, 'bot');
+            } else {
+                console.error('API Error:', await response.text());
+                const botResponse = generateResponse(userMessage);
+                addMessage(botResponse, 'bot');
             }
-            
-            // Add bot response to chat
-            addMessage(botResponse, 'bot');
-            
         } catch (error) {
-            console.error('Error:', error);
-            // Remove typing indicator
-            document.querySelector('.typing').remove();
+            console.error('Message Error:', error);
+            // Remove typing indicator if it exists
+            const typingElement = document.querySelector('.typing');
+            if (typingElement) typingElement.remove();
+            
             // Use fallback response
             const botResponse = generateResponse(userMessage);
             addMessage(botResponse, 'bot');
@@ -655,7 +749,9 @@ async function sendMessage() {
         // Use fallback response system
         setTimeout(() => {
             // Remove typing indicator
-            document.querySelector('.typing').remove();
+            const typingElement = document.querySelector('.typing');
+            if (typingElement) typingElement.remove();
+            
             const botResponse = generateResponse(userMessage);
             addMessage(botResponse, 'bot');
         }, 1000);
