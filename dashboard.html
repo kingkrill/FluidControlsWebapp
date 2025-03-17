@@ -532,6 +532,135 @@
     </div>
     
     <script>
+        // Add this code to the script section of your dashboard.html file, replacing the existing sendMessage function
+
+// Gemini API configuration
+const GEMINI_API_KEY = 'AIzaSyB1lu1c7yQRgdHn4NemfE-mNLUrK3Gy68s';
+// Use corsproxy.io as a CORS proxy
+const CORS_PROXY = 'https://corsproxy.io/?';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+// API status variables
+let apiAvailable = false;
+
+// Check if API is accessible
+async function checkApiConnection() {
+    const statusIndicator = document.getElementById('api-indicator');
+    const statusText = document.getElementById('api-status-text');
+    
+    try {
+        // Use a simple test query
+        const response = await fetch(`${CORS_PROXY}${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        parts: [
+                            {
+                                text: "Hello"
+                            }
+                        ]
+                    }
+                ]
+            })
+        });
+        
+        if (response.ok) {
+            apiAvailable = true;
+            statusIndicator.className = 'status-indicator status-green';
+            statusText.textContent = 'API Connected - Using Gemini AI';
+        } else {
+            apiAvailable = false;
+            statusIndicator.className = 'status-indicator status-red';
+            statusText.textContent = 'API Unavailable - Using Fallback Mode';
+        }
+    } catch (error) {
+        console.error('API Check Error:', error);
+        apiAvailable = false;
+        statusIndicator.className = 'status-indicator status-red';
+        statusText.textContent = 'API Unavailable - Using Fallback Mode';
+    }
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Existing code...
+    
+    // Check API connection
+    checkApiConnection();
+});
+
+// Chat functionality with Gemini API
+async function sendMessage() {
+    const userInput = document.getElementById('user-input');
+    const userMessage = userInput.value.trim();
+    
+    if (userMessage === '') return;
+    
+    // Add user message to chat
+    addMessage(userMessage, 'user');
+    userInput.value = '';
+    
+    // Show typing indicator
+    const typingIndicator = addMessage("Thinking...", 'bot', 'typing');
+    
+    if (apiAvailable) {
+        try {
+            // Call Gemini API through CORS proxy
+            const response = await fetch(`${CORS_PROXY}${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: `You are a helpful assistant for Fluid Controls specializing in vendor rating and analysis. Respond to this query: ${userMessage}\n\nProvide information related to vendor management, supply chain, performance metrics, or rating systems.`
+                                }
+                            ]
+                        }
+                    ]
+                })
+            });
+            
+            const data = await response.json();
+            
+            // Remove typing indicator
+            document.querySelector('.typing').remove();
+            
+            // Get response text
+            let botResponse = "I'm sorry, I couldn't process your request at the moment. Please try again later.";
+            
+            if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
+                botResponse = data.candidates[0].content.parts[0].text;
+            }
+            
+            // Add bot response to chat
+            addMessage(botResponse, 'bot');
+            
+        } catch (error) {
+            console.error('Error:', error);
+            // Remove typing indicator
+            document.querySelector('.typing').remove();
+            // Use fallback response
+            const botResponse = generateResponse(userMessage);
+            addMessage(botResponse, 'bot');
+        }
+    } else {
+        // Use fallback response system
+        setTimeout(() => {
+            // Remove typing indicator
+            document.querySelector('.typing').remove();
+            const botResponse = generateResponse(userMessage);
+            addMessage(botResponse, 'bot');
+        }, 1000);
+    }
+}
         // Session check (redirect to login if not authenticated)
         function checkSession() {
             // In a real app, you'd verify a token or session cookie
