@@ -506,6 +506,54 @@
                 <span class="status-indicator" id="api-indicator"></span>
                 <span id="api-status-text">Checking API connection...</span>
             </div>
+<script>
+    // Add ChatGPT button
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatSection = document.getElementById('chatbot-section');
+        const chatContainer = document.querySelector('.chat-container');
+        
+        // Create the ChatGPT button
+        const chatGptButton = document.createElement('a');
+        chatGptButton.href = "https://chat.openai.com/g/YOUR_CUSTOM_GPT_ID"; // Replace this with your actual custom GPT link later
+        chatGptButton.target = "_blank"; // Open in new tab
+        chatGptButton.textContent = "Open Vendor Analysis GPT";
+        chatGptButton.style.display = 'inline-flex';
+        chatGptButton.style.alignItems = 'center';
+        chatGptButton.style.justifyContent = 'center';
+        chatGptButton.style.padding = '10px 16px';
+        chatGptButton.style.backgroundColor = '#10a37f'; // ChatGPT green color
+        chatGptButton.style.color = 'white';
+        chatGptButton.style.border = 'none';
+        chatGptButton.style.borderRadius = '4px';
+        chatGptButton.style.cursor = 'pointer';
+        chatGptButton.style.textDecoration = 'none';
+        chatGptButton.style.fontWeight = 'bold';
+        chatGptButton.style.marginTop = '15px';
+        chatGptButton.style.transition = 'all 0.3s ease';
+        
+        // Add icon to the button
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-external-link-alt';
+        icon.style.marginRight = '8px';
+        chatGptButton.prepend(icon);
+        
+        // Add hover effect
+        chatGptButton.onmouseover = function() {
+            this.style.backgroundColor = '#0c8a6a'; // Darker green on hover
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        };
+        chatGptButton.onmouseout = function() {
+            this.style.backgroundColor = '#10a37f';
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        };
+        
+        // Insert the button after the api status
+        const apiStatus = document.querySelector('.api-status');
+        apiStatus.parentNode.insertBefore(chatGptButton, apiStatus.nextSibling);
+    });
+    </script>
         </div>
 
         <div class="section colab-section" id="colab-section">
