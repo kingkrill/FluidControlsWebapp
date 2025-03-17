@@ -3,1106 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluid Controls - Vendor Rating and Analysis System</title>
-    <!-- Inline Font Awesome to avoid CDN issues -->
+    <title>Fluid Controls - Login</title>
     <style>
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
-        
-        :root {
-            --bg-primary: #f4f7f6;
-            --bg-secondary: #fff;
-            --text-primary: #333;
-            --text-secondary: #555;
-            --accent: #3498db;
-            --accent-hover: #2980b9;
-            --border: #ddd;
-            --card-bg: #f9f9f9;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --header-color: #2c3e50;
-            --subtitle-color: #34495e;
-            --footer-color: #7f8c8d;
-            --message-user: #3498db;
-            --message-bot: #f1f1f1;
-            --message-bot-text: #333;
-            --toggle-bg: #f0f0f0;
-            --toggle-circle: #3498db;
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: #1a1a2e;
-            --bg-secondary: #16213e;
-            --text-primary: #e6e6e6;
-            --text-secondary: #b8b8b8;
-            --accent: #4361ee;
-            --accent-hover: #3a56d4;
-            --border: #2c3e50;
-            --card-bg: #0f3460;
-            --shadow: rgba(0, 0, 0, 0.3);
-            --header-color: #e6e6e6;
-            --subtitle-color: #b8b8b8;
-            --footer-color: #a0a0a0;
-            --message-user: #4361ee;
-            --message-bot: #16213e;
-            --message-bot-text: #e6e6e6;
-            --toggle-bg: #2c3e50;
-            --toggle-circle: #e6e6e6;
-        }
-
-        * {
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
+        /* Basic styling for the login page */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
             margin: 0;
             padding: 0;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: var(--bg-secondary);
+        
+        .login-container {
+            background-color: white;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px var(--shadow);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
         }
-
-        .header {
+        
+        .login-logo {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 20px;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            width: auto;
-            height: 50px;
+        
+        .login-logo img {
+            height: 60px;
             margin-right: 10px;
-            transition: transform 0.3s ease;
         }
-
-        .logo:hover img {
-            transform: scale(1.05);
-        }
-
-        .logo span {
+        
+        .login-logo span {
             font-size: 24px;
             font-weight: bold;
-            color: var(--header-color);
+            color: #2c3e50;
         }
-
-        .theme-toggle {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            background-color: var(--toggle-bg);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 0;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
         }
-
-        .toggle-circle {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            background-color: var(--toggle-circle);
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-            left: 3px;
-            top: 3px;
-            z-index: 2;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-
-        [data-theme="dark"] .toggle-circle {
-            transform: translateX(30px);
-        }
-
-        .toggle-icon {
-            position: absolute;
-            color: var(--bg-secondary);
-            font-size: 12px;
-            transition: opacity 0.3s ease;
-            z-index: 1;
-        }
-
-        .sun-icon {
-            left: 10px;
-            opacity: 1;
-        }
-
-        .moon-icon {
-            right: 10px;
-            opacity: 0;
-        }
-
-        [data-theme="dark"] .sun-icon {
-            opacity: 0;
-        }
-
-        [data-theme="dark"] .moon-icon {
-            opacity: 1;
-        }
-
-        .title {
-            font-size: 22px;
-            font-weight: bold;
+        
+        .form-group {
             margin-bottom: 20px;
-            color: var(--subtitle-color);
-            text-align: center;
         }
-
-        .menu {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
         }
-
-        .menu a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
-            color: #fff;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 150px;
-            box-shadow: 0 4px 6px var(--shadow);
-        }
-
-        .menu a:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 7px 10px var(--shadow);
-        }
-
-        .menu a.active {
-            background: linear-gradient(90deg, var(--accent-hover), var(--accent));
-            transform: translateY(-2px);
-            box-shadow: 0 5px 8px var(--shadow);
-        }
-
-        .menu a i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-
-        @media (max-width: 768px) {
-            .menu {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .menu a {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-
-        .section {
-            display: none;
+        
+        .form-group input {
             width: 100%;
-            margin-top: 20px;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: var(--card-bg);
-            box-shadow: 0 4px 6px var(--shadow);
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .home-section {
-            text-align: center;
-        }
-
-        .home-section h2 {
-            color: var(--header-color);
-            margin-bottom: 15px;
-        }
-
-        .home-section p {
-            line-height: 1.6;
-            color: var(--text-secondary);
-        }
-
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 500px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            background-color: var(--bg-secondary);
-            box-shadow: 0 4px 6px var(--shadow);
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            margin-bottom: 5px;
-            box-shadow: 0 2px 4px var(--shadow);
-            transition: transform 0.2s ease;
-        }
-
-        .message:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px var(--shadow);
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background-color: var(--message-user);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .bot-message {
-            align-self: flex-start;
-            background-color: var(--message-bot);
-            color: var(--message-bot-text);
-            border-bottom-left-radius: 4px;
-        }
-
-        .typing {
-            align-self: flex-start;
-            background-color: var(--message-bot);
-            color: var(--text-secondary);
-            border-bottom-left-radius: 4px;
-            font-style: italic;
-        }
-
-        .chat-input {
-            display: flex;
-            padding: 10px;
-            background-color: var(--card-bg);
-            border-top: 1px solid var(--border);
-        }
-
-        .chat-input input {
-            flex: 1;
             padding: 12px 15px;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            outline: none;
-            font-size: 14px;
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        .chat-input input:focus {
-            box-shadow: 0 0 0 2px var(--accent);
-        }
-
-        .chat-input button {
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 12px 20px;
-            margin-left: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px var(--shadow);
-        }
-
-        .chat-input button:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px var(--shadow);
-        }
-
-        .api-status {
-            margin-top: 10px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 5px;
-            box-shadow: 0 0 5px currentColor;
-        }
-        
-        .status-green {
-            background-color: #2ecc71;
-        }
-        
-        .status-red {
-            background-color: #e74c3c;
-        }
-
-        .graph-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .graph-controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .graph-container {
-            width: 100%;
-            height: 400px;
-            background-color: var(--bg-secondary);
+            border: 1px solid #ddd;
             border-radius: 8px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 6px var(--shadow);
-        }
-
-        select, input, button {
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        select:focus, input:focus {
-            box-shadow: 0 0 0 2px var(--accent);
-        }
-
-        button.graph-btn {
-            background-color: var(--accent);
-            color: white;
-            cursor: pointer;
-            border: none;
-            padding: 10px 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px var(--shadow);
-        }
-
-        button.graph-btn:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px var(--shadow);
-        }
-
-        /* Power BI styles */
-        .powerbi-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .powerbi-container {
-            width: 100%;
-            height: 500px;
-            background-color: var(--bg-secondary);
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 6px var(--shadow);
-            position: relative;
-            overflow: hidden;
-            margin-top: 15px;
-        }
-
-        .loading-indicator {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            color: var(--text-secondary);
             font-size: 16px;
+            box-sizing: border-box;
         }
-
-        .loading-indicator i {
-            margin-right: 10px;
-            font-size: 24px;
-        }
-
-        iframe.powerbi-iframe {
-            border: none;
+        
+        .login-btn {
             width: 100%;
-            height: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-
-        .footer {
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .error-message {
+            color: #e74c3c;
             text-align: center;
-            margin-top: 30px;
-            padding: 10px;
+            margin: 10px 0;
             font-size: 14px;
-            color: var(--footer-color);
-            animation: fadeIn 0.5s ease;
+            display: none;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <!-- Base64 encoded simple placeholder logo -->
-                <img src="data:image/png;base64,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" alt="Fluid Controls Logo">
-                <span>Fluid Controls</span>
-            </div>
-            <div class="theme-toggle" onclick="toggleTheme()">
-                <div class="toggle-circle"></div>
-                <i class="fas fa-sun toggle-icon sun-icon"></i>
-                <i class="fas fa-moon toggle-icon moon-icon"></i>
-            </div>
+    <div class="login-container">
+        <div class="login-logo">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF8klEQVR4nO2de4hVVRTGf+OYjjrZS3sHWQ8tLXtBD9KMUiwpKoKgP6Ky0igqoiKLHkQQWBBUf1QQUVFQUdGDIrOsKHpQWRY9sLLsYWlmNc44TTt9sS64DDNz7zn77LP3Pnd9MDB4z117re/uvfbea6+1oaKioqKioqKioqKioqIbnAesBDYCfwF/ACuACyKrE4UBwKfANmBrRvnb/j4D+hVfzfIyFPgR2Jmj/G1/PwCDC69tiRkJrM9p6WZZBwwvvMYlZRSwMcDSzbIBGFl4rUvIWKA3wsJN9gFjCq95yRgPbIqwcJNNwLjCa14yjgE2R1i4ySbg6MJrXjKmAf9GWrjJP8DUwmteMmYA/0VauMl/wPTCa14yZgH/J1i4yT/ArMJrXjJmA1sSLNxkCzCr8JqXjAuBbQkWbrINuKjwmpeMS4HtCRZush24pPCal4wrgB0JFm6yA7i88JqXjKuBnQkWbrITuKrwmpeM2cCuBAs32QXMLLzmJWMOsDvBwk12A+cXXvOScSOwJ8HCTfYANxRe85JxC7A3wcJN9gI3F17zknEbsC/Bwk32AbcWXvOSMRfYn2DhJvuBOYXXvGTcDRxIsHCTA8BdBde7dMwDDiZYuMlB4M6C6106HgQOJVi4ySHgvoLrXToeAQ4nWLjJYeD+gutdOh4HjiRYuMkR4KGC6106ngSOJli4yVHgiYLrXTqeA44lWLjJMeDZgutdOl5UTsxj4SeVE/NiwfUuHS8rJ+axcPOz9ULB9S4drysnZmXhJie+UnC9S8dbyok5LfyGcmLeKrjepeNd5cScFn5POTG/F1zv0vG5cmJOC3+unJhfCq536fhGOTGnhb9VTsyPBde7dHyvnJjTwt8pJ+aHgutdOn5UTsxp4e+VE/N9wfUuHeuUE3Na+EflxKwtuN6lY4NyYk4L/6ScmHUF17t0bFZOzGnhX5UT80vB9S4d25QTc1r4N+XE/FpwvUvHDuXEnBb+XTkxvxVc79KxSzkxp4X/UE7MHwXXu3TsVU7MaeE/lRPzZ8H1Lh37lBNzWvgv5cT8XXC9S8cB5cScFv5bOTH/FFzv0nFQOTGnhf9VTsxfBde7dBxWTsxp4X+UE/NPwfUuHUeUE3Na+JByYg4VXO/ScVQ5MaeFDysn5nDB9S4dJ5QTc1r4P+XE/FtwvUvHf8qJOS38n3Ji/i243qXD8r+QX5QTs7Jg1ZvQgfKPcmJOC1d9Iu0q+Eck9Ym0q2B9rOoTaVfB+vzVJ9Kugo3Tqk+kXQUbK1efSLsKNl+hPpF2FWzOSH0i7SrYvKH6RNpVsLlb9Ym0q2DzF+oTaVfB1mDUJ9Kugq0jqU+kXQVby1SfSLsKtqCuPpF2FWxRUn0i7SrYyoL6RNpVsOUd9Ym0q2Crb+oTaVfB1lDVJ9Kugq0Cq0+kXQVbx1efSLsKthNDfSLtKthuIvWJtKtgO+rUJ9Kugu1KVJ9Iuwq2s1R9Iu0q2O5o9Ym0q2A7FNQn0q6C7TJRn0i7CrbTSX0i7SrYbjP1ibSrYDsO1SfSroLtulWfSLsKtvNcfSLtKtju/+MKrrfZmKq0YNVnzBFWLoUX+/hs6+vzsxOVFqz6jDmCrNMKC/YFznR8fvYMYEJkRVR9xpzB1iEFi/UFZ7k+P3sW8GlERVR9xhzC1l+FRYcCZzs+P3sucD/wR2BFVH3GnMLWG4WFhwHnOT4/e77/9X4YUJGoz5hj2HqasPhw4ALH5+cvBJ4C1uasiKrPmHPYuljwASMdnxFaADwArM5REVWfMQex9TThQ0YDlzpeIy0CHgXWdFARVZ8xJ7F1j+BDxgBXOl4/LQYeA9Z1UBFVnzFHsfWg4EOOAq5xvH5aCjwBrG9TEVWfMWexdZvgQ8YC1zleP90LPAW83KYiqj5jDmPrOsGHjAducLx+ug94BngpoyKqPmNOY2uR4EOOBm5yvH5aAjwLPJ9REVW/oqKioqKioqKioqKiAvgGSNvZ6zQJmtIAAAAASUVORK5CYII=" alt="Fluid Controls Logo">
+            <span>Fluid Controls</span>
         </div>
-        <div class="title">Vendor Rating and Analysis System</div>
-        <div class="menu">
-            <a href="#home" id="home-btn" onclick="showSection('home-section')"><i class="fas fa-home"></i> Home</a>
-            <a href="#ai-chat-bot" id="chat-btn" onclick="showSection('chatbot-section')"><i class="fas fa-robot"></i> AI Chat Bot</a>
-            <a href="#graph-plotter" id="graph-btn" onclick="showSection('graph-section')"><i class="fas fa-chart-line"></i> Graph Plotter</a>
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username">
         </div>
-        
-        <div class="section home-section" id="home-section">
-            <h2>Welcome to Fluid Controls Vendor Rating System</h2>
-            <p>This platform provides tools to analyze and rate vendor performance using advanced AI technology. Navigate through the menu to access different features.</p>
-            <p>Use our AI Chat Bot to get instant answers to your vendor-related questions and gain insights into vendor performance metrics.</p>
-            <p>The Graph Plotter tool allows you to visualize vendor performance data and identify trends over time.</p>
-            
-            <!-- Power BI Dashboard Section -->
-            <div class="powerbi-section">
-                <h3>Vendor Performance Dashboard</h3>
-                <div class="powerbi-container" id="powerbi-container">
-                    <!-- Power BI report will be embedded here -->
-                    <div class="loading-indicator">
-                        <i class="fas fa-spinner fa-spin"></i> Loading dashboard...
-                    </div>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
         </div>
-        
-        <div class="section chatbot-section" id="chatbot-section">
-            <h2>AI Assistant</h2>
-            <div class="chat-container">
-                <div class="chat-messages" id="chat-messages">
-                    <div class="message bot-message">
-                        Hello! I'm your AI assistant for vendor rating and analysis. How can I help you today?
-                    </div>
-                </div>
-                <div class="chat-input">
-                    <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="if(event.key === 'Enter') sendMessage()">
-                    <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
-                </div>
-            </div>
-            <div class="api-status">
-                <span class="status-indicator" id="api-indicator"></span>
-                <span id="api-status-text">Checking API connection...</span>
-            </div>
-        </div>
+        <div class="error-message" id="error-message">Invalid username or password. Please try again.</div>
+        <button class="login-btn" id="login-btn">Login</button>
+    </div>
 
-        <div class="section graph-section" id="graph-section">
-            <h2>Vendor Performance Graph Plotter</h2>
-            <div class="graph-controls">
-                <select id="vendor-select">
-                    <option value="">Select Vendor</option>
-                    <option value="vendor1">ABC Supplies</option>
-                    <option value="vendor2">XYZ Manufacturing</option>
-                    <option value="vendor3">Global Components</option>
-                    <option value="vendor4">Tech Solutions Inc.</option>
-                </select>
-                <select id="metric-select">
-                    <option value="">Select Metric</option>
-                    <option value="quality">Quality Score</option>
-                    <option value="delivery">On-Time Delivery</option>
-                    <option value="price">Price Competitiveness</option>
-                    <option value="response">Response Time</option>
-                </select>
-                <select id="period-select">
-                    <option value="month">Last Month</option>
-                    <option value="quarter">Last Quarter</option>
-                    <option value="year">Last Year</option>
-                    <option value="custom">Custom Range</option>
-                </select>
-                <div id="date-range" style="display:none;">
-                    <input type="date" id="start-date">
-                    <input type="date" id="end-date">
-                </div>
-                <button class="graph-btn" onclick="plotGraph()"><i class="fas fa-chart-line"></i> Generate Graph</button>
-            </div>
-            <div class="graph-container" id="graph-container">
-                <div style="display:flex; justify-content:center; align-items:center; height:100%; color:var(--text-secondary);">
-                    <p>Select parameters and click "Generate Graph" to visualize vendor performance data</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="footer">
-        &copy; 2025 Fluid Controls. All rights reserved.
-    </div>
-    
     <script>
-        // Theme toggle functionality
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        // Load saved theme from localStorage
         document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            }
-            
-            // Show home section by default
-            showSection('home-section');
-            checkApiConnection();
-            
-            // Set up period select change event
-            document.getElementById('period-select').addEventListener('change', function() {
-                const dateRange = document.getElementById('date-range');
-                if (this.value === 'custom') {
-                    dateRange.style.display = 'block';
-                } else {
-                    dateRange.style.display = 'none';
+            // Add event listeners for login
+            document.getElementById('login-btn').addEventListener('click', login);
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
                 }
             });
-            
-            // If home is the default section, embed Power BI on page load
-            if (document.getElementById('home-section').style.display !== 'none') {
-                setTimeout(embedPowerBI, 500);
-            }
+            document.getElementById('username').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
         });
+
+        // Login function
+        // Login function
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('error-message');
+    const loginContainer = document.querySelector('.login-container');
+    
+    if (username === "admin" && password === "fluidcontchakan#123") {
+        // Successful login - set session storage to indicate authenticated status
+        sessionStorage.setItem('authenticated', 'true');
+        window.location.href = "dashboard.html"; // Redirect to your main app
+    } else {
+        // Failed login
+        errorMessage.style.display = 'block';
         
-        function showSection(sectionId) {
-            // Hide all sections
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                section.style.display = 'none';
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).style.display = 'block';
-            
-            // Update active menu button
-            const menuButtons = document.querySelectorAll('.menu a');
-            menuButtons.forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // Add active class to clicked button
-            if (sectionId === 'home-section') {
-                document.getElementById('home-btn').classList.add('active');
-                // Small delay to ensure the section is displayed before embedding
-                setTimeout(embedPowerBI, 100);
-            } else if (sectionId === 'chatbot-section') {
-                document.getElementById('chat-btn').classList.add('active');
-            } else if (sectionId === 'graph-section') {
-                document.getElementById('graph-btn').classList.add('active');
-            }
-        }
-        
-        // Power BI Embedding
-        function embedPowerBI() {
-            // Check if Power BI container exists
-            const container = document.getElementById('powerbi-container');
-            if (!container) return;
-            
-            // Clear loading indicator
-            container.innerHTML = '';
-            
-            // Create iframe for Power BI report
-            const iframe = document.createElement('iframe');
-            iframe.className = 'powerbi-iframe';
-            iframe.title = 'Vendor Performance Dashboard';
-            
-            // Set the source to your Power BI report
-            // Replace this URL with your actual Power BI embed URL
-            iframe.src = 'https://app.powerbi.com/reportEmbed?reportId=YOUR_REPORT_ID&autoAuth=true&embeddedDemo=true';
-            
-            // Add iframe to container
-            container.appendChild(iframe);
-            
-            // Optional: Add message for demo purposes if you don't have a real Power BI embed URL
-            if (iframe.src.includes('YOUR_REPORT_ID')) {
-                // This is a demo message for when you don't have a real Power BI URL
-                container.innerHTML = `
-                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center;">
-                        <i class="fas fa-chart-bar" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
-                        <h3>Power BI Dashboard Demo</h3>
-                        <p>This is a placeholder for your Power BI dashboard. In a production environment, you would embed your actual Power BI report here.</p>
-                        <p>To embed a real Power BI report, you need:</p>
-                        <ul style="text-align: left; margin-top: 10px;">
-                            <li>A Power BI Pro or Premium account</li>
-                            <li>A published report</li>
-                            <li>Proper authentication setup</li>
-                            <li>The embed URL and report ID</li>
-                        </ul>
-                                                <div style="margin-top: 20px; padding: 15px; background: var(--card-bg); border-radius: 8px; max-width: 500px;">
-                            <code style="color: var(--accent);">
-                                // Sample embed code<br>
-                                iframe.src = 'https://app.powerbi.com/reportEmbed?reportId=YOUR_REPORT_ID&autoAuth=true'
-                            </code>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-        
-        // Fallback responses for when API fails
-        const fallbackResponses = {
-            "hello": "Hello! How can I assist you with vendor analysis today?",
-            "hi": "Hi there! How can I help you with your vendor inquiries?",
-            "vendor rating": "Our vendor rating system evaluates suppliers based on quality, delivery performance, pricing, and responsiveness. Would you like me to analyze a specific vendor for you?",
-            "rating": "Our rating system assigns scores from 1-5 in key categories: Quality (40%), Delivery (30%), Price (20%), and Service (10%). These are weighted to create an overall performance score.",
-            "metrics": "We track several performance metrics including on-time delivery rate, defect rates, responsiveness to issues, price competitiveness, and technical support quality.",
-            "help": "I can help with vendor ratings, performance analysis, comparison between vendors, identifying improvement areas, and generating reports. What specific information are you looking for?",
-            "thanks": "You're welcome! Feel free to ask if you need any other information about your vendors.",
-            "thank you": "You're welcome! Feel free to ask if you need any other information about your vendors."
-        };
-        
-        // Gemini API configuration
-        const GEMINI_API_KEY = 'AIzaSyB1lu1c7yQRgdHn4NemfE-mNLUrK3Gy68s';
-        const GEMINI_API_URL = 'https://cors-anywhere.herokuapp.com/https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-        
-        // API status variables
-        let apiAvailable = false;
-        
-        // Check if API is accessible
-        async function checkApiConnection() {
-            const statusIndicator = document.getElementById('api-indicator');
-            const statusText = document.getElementById('api-status-text');
-            
-            try {
-                // Use a simple test query
-                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        contents: [
-                            {
-                                parts: [
-                                    {
-                                        text: "Hello"
-                                    }
-                                ]
-                            }
-                        ]
-                    })
-                });
-                
-                if (response.ok) {
-                    apiAvailable = true;
-                    statusIndicator.className = 'status-indicator status-green';
-                    statusText.textContent = 'API Connected - Using Gemini AI';
-                } else {
-                    apiAvailable = false;
-                    statusIndicator.className = 'status-indicator status-red';
-                    statusText.textContent = 'API Unavailable - Using Fallback Mode';
-                }
-            } catch (error) {
-                console.error('API Check Error:', error);
-                apiAvailable = false;
-                statusIndicator.className = 'status-indicator status-red';
-                statusText.textContent = 'API Unavailable - Using Fallback Mode';
-            }
-        }
-        
-        async function sendMessage() {
-            const userInput = document.getElementById('user-input');
-            const userMessage = userInput.value.trim();
-            
-            if (userMessage === '') return;
-            
-            // Add user message to chat
-            addMessage(userMessage, 'user');
-            userInput.value = '';
-            
-            // Show typing indicator
-            const typingIndicator = addMessage("Thinking...", 'bot', 'typing');
-            
-            if (apiAvailable) {
-                try {
-                    // Call Gemini API
-                    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            contents: [
-                                {
-                                    parts: [
-                                        {
-                                            text: `You are a helpful assistant for Fluid Controls specializing in vendor rating and analysis. Respond to this query: ${userMessage}\n\nProvide information related to vendor management, supply chain, performance metrics, or rating systems.`
-                                        }
-                                    ]
-                                }
-                            ]
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    // Remove typing indicator
-                    document.querySelector('.typing').remove();
-                    
-                    // Get response text
-                    let botResponse = "I'm sorry, I couldn't process your request at the moment. Please try again later.";
-                    
-                    if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
-                        botResponse = data.candidates[0].content.parts[0].text;
-                    }
-                    
-                    // Add bot response to chat
-                    addMessage(botResponse, 'bot');
-                    
-                } catch (error) {
-                    console.error('Error:', error);
-                    // Remove typing indicator
-                    document.querySelector('.typing').remove();
-                    // Use fallback response
-                    handleFallbackResponse(userMessage);
-                }
-            } else {
-                // Use fallback response system
-                setTimeout(() => {
-                    // Remove typing indicator
-                    document.querySelector('.typing').remove();
-                    handleFallbackResponse(userMessage);
-                }, 500);
-            }
-        }
-        
-        function handleFallbackResponse(userMessage) {
-            const lowerCaseMessage = userMessage.toLowerCase();
-            let botResponse = "I'm here to help with vendor rating and analysis. Could you please clarify your question about vendors or supplier performance?";
-            
-            // Check for keywords in fallback responses
-            for (const [key, response] of Object.entries(fallbackResponses)) {
-                if (lowerCaseMessage.includes(key)) {
-                    botResponse = response;
-                    break;
-                }
-            }
-            
-            // Check for other vendor-related keywords
-            if (lowerCaseMessage.includes("vendor") || 
-                lowerCaseMessage.includes("supplier") || 
-                lowerCaseMessage.includes("performance")) {
-                botResponse = "I can provide information about vendor ratings, performance metrics, and analysis. Could you please specify what aspect of vendor management you're interested in?";
-            }
-            
-            addMessage(botResponse, 'bot');
-        }
-        
-        function addMessage(text, sender, className = '') {
-            const messagesContainer = document.getElementById('chat-messages');
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-            messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-            if (className) {
-                messageElement.classList.add(className);
-            }
-            messageElement.textContent = text;
-            messagesContainer.appendChild(messageElement);
-            
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            return messageElement;
-        }
-        
-        // Graph plotting functionality 
-        function plotGraph() {
-            const vendor = document.getElementById('vendor-select').value;
-            const metric = document.getElementById('metric-select').value;
-            const period = document.getElementById('period-select').value;
-            
-            if (!vendor || !metric) {
-                alert('Please select both a vendor and a metric to plot the graph.');
-                return;
-            }
-            
-            // Clear previous graph
-            const graphContainer = document.getElementById('graph-container');
-            graphContainer.innerHTML = '';
-            
-            // Create sample data (in a real app, this would come from an API/database)
-            const data = generateSampleData(vendor, metric, period);
-            
-            // Create SVG for graph
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('width', '100%');
-            svg.setAttribute('height', '100%');
-            svg.style.overflow = 'visible';
-            graphContainer.appendChild(svg);
-            
-            // Plot the graph
-            renderGraph(svg, data, metric);
-        }
-        
-        function generateSampleData(vendor, metric, period) {
-            const data = [];
-            const today = new Date();
-            let numPoints = 30; // Default for month
-            
-            if (period === 'quarter') {
-                numPoints = 90;
-            } else if (period === 'year') {
-                numPoints = 365;
-            }
-            
-            // Generate random data with some trends based on vendor and metric
-            for (let i = numPoints; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(today.getDate() - i);
-                
-                let value;
-                if (vendor === 'vendor1') {
-                    // ABC Supplies - generally good performance with some fluctuations
-                    value = 80 + Math.random() * 15;
-                } else if (vendor === 'vendor2') {
-                    // XYZ Manufacturing - improving over time
-                    value = 60 + (i/numPoints) * 30 + Math.random() * 10;
-                } else if (vendor === 'vendor3') {
-                    // Global Components - declining performance
-                    value = 90 - (i/numPoints) * 20 + Math.random() * 10;
-                } else {
-                    // Tech Solutions - cyclical performance
-                    value = 75 + Math.sin(i/10) * 15 + Math.random() * 5;
-                }
-                
-                // Adjust for metric type
-                if (metric === 'quality') {
-                    value = Math.min(value * 1.1, 100); // Higher quality scores
-                } else if (metric === 'price') {
-                    value = Math.max(value * 0.9, 50); // Lower price competitiveness
-                }
-                
-                data.push({
-                    date: date,
-                    value: value
-                });
-            }
-            
-            return data;
-        }
-        
-        function renderGraph(svg, data, metric) {
-            const width = svg.clientWidth;
-            const height = svg.clientHeight;
-            const padding = 40;
-            
-            // Find min and max values
-            const minValue = Math.min(...data.map(d => d.value));
-            const maxValue = Math.max(...data.map(d => d.value));
-            
-            // Create scales
-            const xScale = width / (data.length - 1);
-            const yScale = (height - 2 * padding) / (maxValue - minValue);
-            
-            // Create axes
-            const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            xAxis.setAttribute('x1', 0);
-            xAxis.setAttribute('y1', height - padding);
-            xAxis.setAttribute('x2', width);
-            xAxis.setAttribute('y2', height - padding);
-            xAxis.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'));
-            xAxis.setAttribute('stroke-width', '2');
-            svg.appendChild(xAxis);
-            
-            const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            yAxis.setAttribute('x1', padding);
-            yAxis.setAttribute('y1', 0);
-            yAxis.setAttribute('x2', padding);
-            yAxis.setAttribute('y2', height - padding);
-            yAxis.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'));
-            yAxis.setAttribute('stroke-width', '2');
-            svg.appendChild(yAxis);
-            
-            // Add Y-axis labels
-            for (let i = 0; i <= 5; i++) {
-                const value = minValue + (maxValue - minValue) * (i / 5);
-                const y = height - padding - (value - minValue) * yScale;
-                
-                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', padding - 10);
-                label.setAttribute('y', y);
-                label.setAttribute('text-anchor', 'end');
-                label.setAttribute('alignment-baseline', 'middle');
-                label.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'));
-                label.textContent = Math.round(value);
-                svg.appendChild(label);
-                
-                // Grid line
-                const gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                gridLine.setAttribute('x1', padding);
-                gridLine.setAttribute('y1', y);
-                gridLine.setAttribute('x2', width);
-                gridLine.setAttribute('y2', y);
-                gridLine.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--border'));
-                gridLine.setAttribute('stroke-width', '1');
-                gridLine.setAttribute('stroke-dasharray', '5,5');
-                svg.appendChild(gridLine);
-            }
-            
-            // Add X-axis labels (every 5th data point)
-            for (let i = 0; i < data.length; i += Math.ceil(data.length / 6)) {
-                const x = padding + i * xScale;
-                const date = data[i].date;
-                
-                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', x);
-                label.setAttribute('y', height - padding + 20);
-                label.setAttribute('text-anchor', 'middle');
-                label.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'));
-                label.textContent = `${date.getMonth() + 1}/${date.getDate()}`;
-                svg.appendChild(label);
-            }
-            
-            // Create the line
-            const linePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            let pathData = '';
-            
-            data.forEach((point, i) => {
-                const x = padding + i * xScale;
-                const y = height - padding - (point.value - minValue) * yScale;
-                
-                if (i === 0) {
-                    pathData += `M ${x} ${y}`;
-                } else {
-                    pathData += ` L ${x} ${y}`;
-                }
-                
-                // Add data points
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', x);
-                circle.setAttribute('cy', y);
-                circle.setAttribute('r', 4);
-                circle.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--accent'));
-                
-                // Add hover effect
-                circle.onmouseover = function() {
-                    this.setAttribute('r', 6);
-                    
-                    // Add tooltip
-                    const tooltip = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                    tooltip.setAttribute('id', 'tooltip');
-                    
-                    const tooltipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    tooltipRect.setAttribute('x', x + 10);
-                    tooltipRect.setAttribute('y', y - 30);
-                    tooltipRect.setAttribute('width', 120);
-                    tooltipRect.setAttribute('height', 50);
-                    tooltipRect.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--bg-secondary'));
-                    tooltipRect.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--border'));
-                    tooltipRect.setAttribute('rx', 5);
-                    
-                    const tooltipDate = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    tooltipDate.setAttribute('x', x + 20);
-                    tooltipDate.setAttribute('y', y - 10);
-                    tooltipDate.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'));
-                    tooltipDate.textContent = point.date.toLocaleDateString();
-                    
-                    const tooltipValue = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    tooltipValue.setAttribute('x', x + 20);
-                    tooltipValue.setAttribute('y', y + 10);
-                    tooltipValue.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'));
-                    tooltipValue.textContent = `${metric}: ${point.value.toFixed(1)}`;
-                    
-                    tooltip.appendChild(tooltipRect);
-                    tooltip.appendChild(tooltipDate);
-                    tooltip.appendChild(tooltipValue);
-                    svg.appendChild(tooltip);
-                };
-                
-                circle.onmouseout = function() {
-                    this.setAttribute('r', 4);
-                    const tooltip = document.getElementById('tooltip');
-                    if (tooltip) {
-                        svg.removeChild(tooltip);
-                    }
-                };
-                
-                svg.appendChild(circle);
-            });
-            
-            linePath.setAttribute('d', pathData);
-            linePath.setAttribute('fill', 'none');
-            linePath.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--accent'));
-            linePath.setAttribute('stroke-width', '3');
-            svg.appendChild(linePath);
-            
-            // Add title
-            const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            title.setAttribute('x', width / 2);
-            title.setAttribute('y', 20);
-            title.setAttribute('text-anchor', 'middle');
-            title.setAttribute('font-size', '16px');
-            title.setAttribute('font-weight', 'bold');
-            title.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'));
-            
-            const vendorName = document.getElementById('vendor-select').options[document.getElementById('vendor-select').selectedIndex].text;
-            const metricName = document.getElementById('metric-select').options[document.getElementById('metric-select').selectedIndex].text;
-            title.textContent = `${vendorName} - ${metricName}`;
-            
-            svg.appendChild(title);
-            
-            // Add Y-axis title
-            const yTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            yTitle.setAttribute('x', -height/2);
-            yTitle.setAttribute('y', padding/3);
-            yTitle.setAttribute('text-anchor', 'middle');
-            yTitle.setAttribute('transform', 'rotate(-90)');
-            yTitle.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'));
-            yTitle.textContent = 'Score (0-100)';
-            svg.appendChild(yTitle);
-            
-            // Add X-axis title
-            const xTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            xTitle.setAttribute('x', width/2);
-            xTitle.setAttribute('y', height - 5);
-            xTitle.setAttribute('text-anchor', 'middle');
-            xTitle.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'));
-            xTitle.textContent = 'Date';
-            svg.appendChild(xTitle);
-        }
+        // Shake animation for error
+        loginContainer.style.animation = 'none';
+        setTimeout(() => {
+            loginContainer.style.animation = 'shake 0.5s';
+        }, 10);
+    }
+}
     </script>
 </body>
 </html>

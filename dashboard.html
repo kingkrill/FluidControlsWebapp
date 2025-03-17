@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluid Controls - Vendor Rating and Analysis System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #f4f7f6;
+            --bg-secondary: #fff;
+            --text-primary: #333;
+            --text-secondary: #555;
+            --accent: #3498db;
+            --accent-hover: #2980b9;
+            --border: #ddd;
+            --card-bg: #f9f9f9;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --header-color: #2c3e50;
+            --subtitle-color: #34495e;
+            --footer-color: #7f8c8d;
+            --message-user: #3498db;
+            --message-bot: #f1f1f1;
+            --message-bot-text: #333;
+            --toggle-bg: #f0f0f0;
+            --toggle-circle: #3498db;
+            --error: #e74c3c;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --text-primary: #e6e6e6;
+            --text-secondary: #b8b8b8;
+            --accent: #4361ee;
+            --accent-hover: #3a56d4;
+            --border: #2c3e50;
+            --card-bg: #0f3460;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --header-color: #e6e6e6;
+            --subtitle-color: #b8b8b8;
+            --footer-color: #a0a0a0;
+            --message-user: #4361ee;
+            --message-bot: #16213e;
+            --message-bot-text: #e6e6e6;
+            --toggle-bg: #2c3e50;
+            --toggle-circle: #e6e6e6;
+            --error: #e74c3c;
+        }
+
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--bg-secondary);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: auto;
+            height: 50px;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        .logo span {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--header-color);
+        }
+
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background-color: var(--toggle-bg);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .toggle-circle {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: var(--toggle-circle);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            left: 3px;
+            top: 3px;
+            z-index: 2;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .toggle-circle {
+            transform: translateX(30px);
+        }
+
+        .toggle-icon {
+            position: absolute;
+            color: var(--bg-secondary);
+            font-size: 12px;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .sun-icon {
+            left: 10px;
+            opacity: 1;
+        }
+
+        .moon-icon {
+            right: 10px;
+            opacity: 0;
+        }
+
+        [data-theme="dark"] .sun-icon {
+            opacity: 0;
+        }
+
+        [data-theme="dark"] .moon-icon {
+            opacity: 1;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--subtitle-color);
+            text-align: center;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .menu a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 10px var(--shadow);
+        }
+
+        .menu a.active {
+            background: linear-gradient(90deg, var(--accent-hover), var(--accent));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 8px var(--shadow);
+        }
+
+        .menu a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .menu a {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        .section {
+            display: none;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 6px var(--shadow);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .home-section {
+            text-align: center;
+        }
+
+        .home-section h2 {
+            color: var(--header-color);
+            margin-bottom: 15px;
+        }
+
+        .home-section p {
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background-color: var(--bg-secondary);
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 5px;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: transform 0.2s ease;
+        }
+
+        .message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--message-user);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: var(--message-bot);
+            color: var(--message-bot-text);
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing {
+            align-self: flex-start;
+            background-color: var(--message-bot);
+            color: var(--text-secondary);
+            border-bottom-left-radius: 4px;
+            font-style: italic;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            outline: none;
+            font-size: 14px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .chat-input button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        .chat-input button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .api-status {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+            box-shadow: 0 0 5px currentColor;
+        }
+        
+        .status-green {
+            background-color: #2ecc71;
+        }
+        
+        .status-red {
+            background-color: #e74c3c;
+        }
+
+        /* Colab Cell Section Styles */
+        .colab-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .colab-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .colab-container {
+            width: 100%;
+            min-height: 500px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px var(--shadow);
+            overflow: hidden;
+        }
+
+        .notebook-embed {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        .loading-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .loading-indicator i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        /* Power BI styles */
+        .powerbi-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .powerbi-container {
+            width: 100%;
+            height: 500px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px var(--shadow);
+            position: relative;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        iframe.powerbi-iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px;
+            font-size: 14px;
+            color: var(--footer-color);
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <!-- Base64 encoded simple placeholder logo -->
+                <img src="data:image/png;base64,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" alt="Fluid Controls Logo">
+                <span>Fluid Controls</span>
+            </div>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <div class="toggle-circle"></div>
+                <i class="fas fa-sun toggle-icon sun-icon"></i>
+                <i class="fas fa-moon toggle-icon moon-icon"></i>
+            </div>
+        </div>
+        <div class="title">Vendor Rating and Analysis System</div>
+        <div class="menu">
+            <a href="#home" id="home-btn" onclick="showSection('home-section')"><i class="fas fa-home"></i> Home</a>
+            <a href="#ai-chat-bot" id="chat-btn" onclick="showSection('chatbot-section')"><i class="fas fa-robot"></i> AI Chat Bot</a>
+            <a href="#colab-notebook" id="colab-btn" onclick="showSection('colab-section')"><i class="fas fa-chart-line"></i> Colab Analysis</a>
+            <a href="#" onclick="logout()" style="background: linear-gradient(90deg, #e74c3c, #c0392b);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+        
+        <div class="section home-section" id="home-section">
+            <h2>Welcome to Fluid Controls Vendor Rating System</h2>
+            <p>This platform provides tools to analyze and rate vendor performance using advanced AI technology. Navigate through the menu to access different features.</p>
+            <p>Use our AI Chat Bot to get instant answers to your vendor-related questions and gain insights into vendor performance metrics.</p>
+            <p>The Colab Analysis section allows you to view interactive data visualizations from our Google Colab notebooks.</p>
+            
+            <!-- Power BI Dashboard Section -->
+            <div class="powerbi-section">
+                <h3>Vendor Performance Dashboard</h3>
+                <div class="powerbi-container" id="powerbi-container">
+                    <!-- Power BI report will be embedded here -->
+                    <div class="loading-indicator">
+                        <i class="fas fa-spinner fa-spin"></i> Loading dashboard...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section chatbot-section" id="chatbot-section">
+            <h2>AI Assistant</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot-message">
+                        Hello! I'm your AI assistant for vendor rating and analysis. How can I help you today?
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+            <div class="api-status">
+                <span class="status-indicator" id="api-indicator"></span>
+                <span id="api-status-text">Checking API connection...</span>
+            </div>
+        </div>
+
+        <div class="section colab-section" id="colab-section">
+            <h2>Colab Notebook Analysis</h2>
+            <div class="colab-controls">
+                <select id="notebook-select" onchange="loadColabNotebook()">
+                    <option value="">Select Analysis Type</option>
+                    <option value="vendor-comparison">Vendor Performance Comparison</option>
+                    <option value="trend-analysis">Trend Analysis</option>
+                    <option value="quality-metrics">Quality Metrics Deep Dive</option>
+                    <option value="custom">Custom Analysis</option>
+                </select>
+                <button class="graph-btn" onclick="loadColabNotebook()"><i class="fas fa-sync-alt"></i> Load Analysis</button>
+            </div>
+            <div class="colab-container" id="colab-container">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i> Select an analysis type to load Colab notebook data
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        &copy; 2025 Fluid Controls. All rights reserved.
+    </div>
+    
+    <script>
+        // Session check (redirect to login if not authenticated)
+        function checkSession() {
+            // In a real app, you'd verify a token or session cookie
+            // For this demo, we'll just check if we were redirected from the login page
+            if (!sessionStorage.getItem('authenticated')) {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Run session check on page load
+        checkSession();
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('authenticated');
+            window.location.href = 'index.html';
+        }
+
+        // Load saved theme from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+            
+            // Show home section by default
+            showSection('home-section');
+            
+            // If home is the default section, embed Power BI on page load
+            setTimeout(embedPowerBI, 500);
+        });
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Update active menu button
+            const menuButtons = document.querySelectorAll('.menu a');
+            menuButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            if (sectionId === 'home-section') {
+                document.getElementById('home-btn').classList.add('active');
+                // Small delay to ensure the section is displayed before embedding
+                setTimeout(embedPowerBI, 100);
+            } else if (sectionId === 'chatbot-section') {
+                document.getElementById('chat-btn').classList.add('active');
+            } else if (sectionId === 'colab-section') {
+                document.getElementById('colab-btn').classList.add('active');
+                // If no notebook is selected, set default
+                if (!document.getElementById('notebook-select').value) {
+                    document.getElementById('notebook-select').value = 'vendor-comparison';
+                }
+                setTimeout(loadColabNotebook, 100);
+            }
+        }
+        
+        // Colab Notebook Embedding
+        function loadColabNotebook() {
+            const container = document.getElementById('colab-container');
+            const notebookType = document.getElementById('notebook-select').value;
+            
+            if (!notebookType) {
+                container.innerHTML = `
+                    <div class="loading-indicator">
+                        <i class="fas fa-chart-line"></i> Please select an analysis type
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show loading indicator
+            container.innerHTML = `
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i> Loading Colab notebook analysis...
+                </div>
+            `;
+            
+            // Define the notebook URLs for each analysis type
+            // Replace these URLs with your actual Colab notebook URLs
+            const notebookUrls = {
+                'vendor-comparison': 'https://colab.research.google.com/drive/YOUR_NOTEBOOK_ID_1',
+                'trend-analysis': 'https://colab.research.google.com/drive/YOUR_NOTEBOOK_ID_2',
+                'quality-metrics': 'https://colab.research.google.com/drive/YOUR_NOTEBOOK_ID_3',
+                'custom': 'https://colab.research.google.com/drive/YOUR_NOTEBOOK_ID_4'
+            };
+            
+            const url = notebookUrls[notebookType];
+            
+            // Create iframe for Colab notebook
+            const iframe = document.createElement('iframe');
+            iframe.className = 'notebook-embed';
+            iframe.title = 'Colab Notebook Analysis';
+            iframe.src = url;
+            
+            // Clear container and add iframe
+            container.innerHTML = '';
+            container.appendChild(iframe);
+            
+            // If using demo URLs, show a demo placeholder instead
+            if (url.includes('YOUR_NOTEBOOK_ID')) {
+                // Show demo content based on notebook type
+                if (notebookType === 'vendor-comparison') {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-chart-bar" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
+                            <h3>Vendor Comparison Analysis</h3>
+                            <p>This is a placeholder for your Colab notebook analysis.</p>
+                            <div style="max-width: 800px; margin: 30px auto; background: var(--bg-secondary); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px var(--shadow);">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="border-bottom: 2px solid var(--border);">
+                                            <th style="padding: 10px; text-align: left;">Vendor</th>
+                                            <th style="padding: 10px; text-align: right;">Quality</th>
+                                            <th style="padding: 10px; text-align: right;">Delivery</th>
+                                                                                        <th style="padding: 10px; text-align: right;">Delivery</th>
+                                            <th style="padding: 10px; text-align: right;">Price</th>
+                                            <th style="padding: 10px; text-align: right;">Service</th>
+                                            <th style="padding: 10px; text-align: right;">Overall</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid var(--border);">
+                                            <td style="padding: 10px; text-align: left;">ABC Supplies</td>
+                                            <td style="padding: 10px; text-align: right;">87</td>
+                                            <td style="padding: 10px; text-align: right;">92</td>
+                                            <td style="padding: 10px; text-align: right;">78</td>
+                                            <td style="padding: 10px; text-align: right;">85</td>
+                                            <td style="padding: 10px; text-align: right; font-weight: bold;">86</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid var(--border);">
+                                            <td style="padding: 10px; text-align: left;">XYZ Manufacturing</td>
+                                            <td style="padding: 10px; text-align: right;">82</td>
+                                            <td style="padding: 10px; text-align: right;">68</td>
+                                            <td style="padding: 10px; text-align: right;">90</td>
+                                            <td style="padding: 10px; text-align: right;">74</td>
+                                            <td style="padding: 10px; text-align: right; font-weight: bold;">79</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid var(--border);">
+                                            <td style="padding: 10px; text-align: left;">Global Components</td>
+                                            <td style="padding: 10px; text-align: right;">65</td>
+                                            <td style="padding: 10px; text-align: right;">72</td>
+                                            <td style="padding: 10px; text-align: right;">95</td>
+                                            <td style="padding: 10px; text-align: right;">68</td>
+                                            <td style="padding: 10px; text-align: right; font-weight: bold;">73</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px; text-align: left;">Tech Solutions</td>
+                                            <td style="padding: 10px; text-align: right;">93</td>
+                                            <td style="padding: 10px; text-align: right;">88</td>
+                                            <td style="padding: 10px; text-align: right;">70</td>
+                                            <td style="padding: 10px; text-align: right;">89</td>
+                                            <td style="padding: 10px; text-align: right; font-weight: bold;">87</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p><em>In a production environment, this would be an interactive chart from your Colab notebook.</em></p>
+                        </div>
+                    `;
+                } else if (notebookType === 'trend-analysis') {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-chart-line" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
+                            <h3>Trend Analysis</h3>
+                            <p>This is a placeholder for your Colab notebook trend analysis.</p>
+                            <div style="max-width: 800px; margin: 30px auto; background: var(--bg-secondary); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px var(--shadow);">
+                                <img src="https://via.placeholder.com/800x400?text=Trend+Analysis+Chart" style="max-width: 100%; border-radius: 8px;">
+                            </div>
+                            <p><em>In a production environment, this would be an interactive chart from your Colab notebook.</em></p>
+                        </div>
+                    `;
+                } else if (notebookType === 'quality-metrics') {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-check-circle" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
+                            <h3>Quality Metrics Deep Dive</h3>
+                            <p>This is a placeholder for your Colab notebook quality metrics analysis.</p>
+                            <div style="max-width: 800px; margin: 30px auto; background: var(--bg-secondary); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px var(--shadow);">
+                                <img src="https://via.placeholder.com/800x400?text=Quality+Metrics+Chart" style="max-width: 100%; border-radius: 8px;">
+                            </div>
+                            <p><em>In a production environment, this would be an interactive chart from your Colab notebook.</em></p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-cogs" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
+                            <h3>Custom Analysis</h3>
+                            <p>This is a placeholder for your custom Colab notebook analysis.</p>
+                            <div style="max-width: 800px; margin: 30px auto; background: var(--bg-secondary); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px var(--shadow);">
+                                <p>To embed your Colab notebook:</p>
+                                <ol style="text-align: left; margin-left: 20px;">
+                                    <li>Open your notebook in Google Colab</li>
+                                    <li>Share your notebook (File > Share)</li>
+                                    <li>Get the notebook URL</li>
+                                    <li>Replace the placeholder URL in the code</li>
+                                </ol>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Power BI Embedding
+        function embedPowerBI() {
+            // Check if Power BI container exists
+            const container = document.getElementById('powerbi-container');
+            if (!container) return;
+            
+            // Show demo content
+            container.innerHTML = `
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center;">
+                    <i class="fas fa-chart-bar" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
+                    <h3>Power BI Dashboard Demo</h3>
+                    <p>This is a placeholder for your Power BI dashboard. In a production environment, you would embed your actual Power BI report here.</p>
+                    <div style="max-width: 800px; margin: 20px 0;">
+                        <img src="https://via.placeholder.com/800x300?text=Power+BI+Dashboard" style="max-width: 100%; border-radius: 8px;">
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Chat functionality
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const userMessage = userInput.value.trim();
+            
+            if (userMessage === '') return;
+            
+            // Add user message to chat
+            addMessage(userMessage, 'user');
+            userInput.value = '';
+            
+            // Show typing indicator
+            const typingIndicator = addMessage("Thinking...", 'bot', 'typing');
+            
+            // Simulate response delay
+            setTimeout(() => {
+                // Remove typing indicator
+                document.querySelector('.typing').remove();
+                
+                // Generate a response
+                const botResponse = generateResponse(userMessage);
+                addMessage(botResponse, 'bot');
+            }, 1000);
+        }
+        
+        function addMessage(text, sender, className = '') {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+            if (className) {
+                messageElement.classList.add(className);
+            }
+            messageElement.textContent = text;
+            messagesContainer.appendChild(messageElement);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return messageElement;
+        }
+        
+        function generateResponse(userMessage) {
+            const lowerCaseMessage = userMessage.toLowerCase();
+            
+            // Simple response logic
+            if (lowerCaseMessage.includes('hello') || lowerCaseMessage.includes('hi')) {
+                return "Hello! How can I assist you with vendor analysis today?";
+            } else if (lowerCaseMessage.includes('vendor rating') || lowerCaseMessage.includes('rating system')) {
+                return "Our vendor rating system evaluates suppliers based on quality, delivery performance, pricing, and responsiveness. Would you like me to analyze a specific vendor for you?";
+            } else if (lowerCaseMessage.includes('metrics') || lowerCaseMessage.includes('kpi')) {
+                return "We track several performance metrics including on-time delivery rate, defect rates, responsiveness to issues, price competitiveness, and technical support quality.";
+            } else if (lowerCaseMessage.includes('abc supplies') || lowerCaseMessage.includes('abc')) {
+                return "ABC Supplies has an overall rating of 86/100. They excel in delivery performance (92/100) but could improve on pricing (78/100). Would you like more detailed information?";
+            } else if (lowerCaseMessage.includes('xyz manufacturing') || lowerCaseMessage.includes('xyz')) {
+                return "XYZ Manufacturing has an overall rating of 79/100. Their pricing is excellent (90/100), but delivery performance needs improvement (68/100). Would you like to see their trend over time?";
+            } else if (lowerCaseMessage.includes('thank')) {
+                return "You're welcome! Feel free to ask if you need any other information about your vendors.";
+            } else {
+                return "I can provide information about vendor ratings, performance metrics, and analysis. Could you please specify what aspect of vendor management you're interested in?";
+            }
+        }
+    </script>
+</body>
+</html>
