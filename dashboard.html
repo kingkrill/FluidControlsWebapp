@@ -386,7 +386,7 @@
 
         .colab-container {
             width: 100%;
-            min-height: 500px;
+            min-height: 700px;
             background-color: var(--bg-secondary);
             border-radius: 8px;
             border: 1px solid var(--border);
@@ -396,7 +396,7 @@
 
         .notebook-embed {
             width: 100%;
-            height: 500px;
+            height: 700px;
             border: none;
         }
 
@@ -467,7 +467,7 @@
         <div class="menu">
             <a href="#home" id="home-btn" onclick="showSection('home-section')"><i class="fas fa-home"></i> Home</a>
             <a href="#ai-chat-bot" id="chat-btn" onclick="showSection('chatbot-section')"><i class="fas fa-robot"></i> AI Chat Bot</a>
-            <a href="#colab-notebook" id="colab-btn" onclick="showSection('colab-section')"><i class="fas fa-chart-line"></i> Colab Analysis</a>
+            <a href="#colab-notebook" id="colab-btn" onclick="showSection('colab-section')"><i class="fas fa-chart-line"></i> Interactive Analysis</a>
             <a href="#" onclick="logout()" style="background: linear-gradient(90deg, #e74c3c, #c0392b);"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
         
@@ -475,7 +475,7 @@
             <h2>Welcome to Fluid Controls Vendor Rating System</h2>
             <p>This platform provides tools to analyze and rate vendor performance using advanced AI technology. Navigate through the menu to access different features.</p>
             <p>Use our AI Chat Bot to get instant answers to your vendor-related questions and gain insights into vendor performance metrics.</p>
-            <p>The Colab Analysis section allows you to view interactive data visualizations from our Google Colab notebooks.</p>
+            <p>The Interactive Analysis section allows you to access advanced data visualization and AI-powered analytics tools.</p>
             
             <!-- Power BI Dashboard Section -->
             <div class="powerbi-section">
@@ -557,20 +557,13 @@
         </div>
 
         <div class="section colab-section" id="colab-section">
-            <h2>Colab Notebook Analysis</h2>
+            <h2>Interactive Analysis Tool</h2>
             <div class="colab-controls">
-                <select id="notebook-select" onchange="loadColabNotebook()">
-                    <option value="">Select Analysis Type</option>
-                    <option value="vendor-comparison">Vendor Performance Comparison</option>
-                    <option value="trend-analysis">Trend Analysis</option>
-                    <option value="quality-metrics">Quality Metrics Deep Dive</option>
-                    <option value="custom">Custom Analysis</option>
-                </select>
-                <button class="graph-btn" onclick="loadColabNotebook()"><i class="fas fa-sync-alt"></i> Load Analysis</button>
+                <button class="graph-btn" onclick="loadGradioApp()"><i class="fas fa-sync-alt"></i> Load Analysis Tool</button>
             </div>
             <div class="colab-container" id="colab-container">
                 <div class="loading-indicator">
-                    <i class="fas fa-spinner fa-spin"></i> Select an analysis type to load Colab notebook data
+                    <i class="fas fa-chart-line"></i> Click the button above to load the interactive analysis tool
                 </div>
             </div>
         </div>
@@ -581,114 +574,150 @@
     </div>
     
     <script>
-        // Add this code to the script section of your dashboard.html file, replacing the existing sendMessage function
+        // Google Generative AI SDK setup
+        const GEMINI_API_KEY = 'AIzaSyB1lu1c7yQRgdHn4NemfE-mNLUrK3Gy68s';
+        let apiAvailable = false;
+        let genAI;
+        let model;
 
-// Google Generative AI SDK setup
-const GEMINI_API_KEY = 'AIzaSyB1lu1c7yQRgdHn4NemfE-mNLUrK3Gy68s';
-let apiAvailable = false;
-let genAI;
-let model;
+        // Initialize the SDK
+        function initializeGeminiAPI() {
+            try {
+                console.log('Initializing Gemini API...');
+                genAI = new window.GoogleGenerativeAI(GEMINI_API_KEY);
+                model = genAI.getGenerativeModel({ model: "gemini-pro" });
+                console.log('Gemini API initialized successfully');
+                return true;
+            } catch (error) {
+                console.error('Failed to initialize Gemini API:', error);
+                return false;
+            }
+        }
 
-// Initialize the SDK
-function initializeGeminiAPI() {
-    try {
-        console.log('Initializing Gemini API...');
-        genAI = new window.GoogleGenerativeAI(GEMINI_API_KEY);
-        model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        console.log('Gemini API initialized successfully');
-        return true;
-    } catch (error) {
-        console.error('Failed to initialize Gemini API:', error);
-        return false;
-    }
-}
+        // Check API connection
+        async function checkApiConnection() {
+            const statusIndicator = document.getElementById('api-indicator');
+            const statusText = document.getElementById('api-status-text');
+            
+            try {
+                if (!initializeGeminiAPI()) {
+                    throw new Error('API initialization failed');
+                }
+                
+                console.log('Testing API connection...');
+                const result = await model.generateContent("Hello, this is a test message.");
+                console.log('API test response:', result);
+                
+                apiAvailable = true;
+                statusIndicator.className = 'status-indicator status-green';
+                statusText.textContent = 'API Connected - Using Gemini AI';
+            } catch (error) {
+                console.error('API Check Error:', error);
+                apiAvailable = false;
+                statusIndicator.className = 'status-indicator status-red';
+                statusText.textContent = 'API Unavailable - Using Fallback Mode';
+            }
+        }
 
-// Check API connection
-async function checkApiConnection() {
-    const statusIndicator = document.getElementById('api-indicator');
-    const statusText = document.getElementById('api-status-text');
-    
-    try {
-        if (!initializeGeminiAPI()) {
-            throw new Error('API initialization failed');
+        // Load Gradio App
+        function loadGradioApp() {
+            const container = document.getElementById('colab-container');
+            
+            // Show loading indicator
+            container.innerHTML = `
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i> Loading interactive analysis tool...
+                </div>
+            `;
+            
+            // Create iframe for the Gradio app
+            const iframe = document.createElement('iframe');
+            iframe.className = 'notebook-embed';
+            iframe.title = 'Vendor Analysis';
+            iframe.src = 'https://83e3d4bd6018588111.gradio.live/';
+            iframe.style.width = '100%';
+            iframe.style.height = '700px';
+            iframe.style.border = 'none';
+            
+            // Clear container and add iframe after a short delay to show loading
+            setTimeout(() => {
+                container.innerHTML = '';
+                container.appendChild(iframe);
+            }, 1000);
+        }
+
+        // Call this function when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check API connection
+            checkApiConnection();
+            
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+            
+            // Show home section by default
+            showSection('home-section');
+            
+            // If home is the default section, embed Power BI on page load
+            setTimeout(embedPowerBI, 500);
+        });
+
+        // Chat functionality with Gemini API SDK
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const userMessage = userInput.value.trim();
+            
+            if (userMessage === '') return;
+            
+            // Add user message to chat
+            addMessage(userMessage, 'user');
+            userInput.value = '';
+            
+            // Show typing indicator
+            const typingIndicator = addMessage("Thinking...", 'bot', 'typing');
+            
+            if (apiAvailable) {
+                try {
+                    console.log('Sending message to Gemini API...');
+                    const prompt = `You are a helpful assistant for Fluid Controls specializing in vendor rating and analysis. Respond to this query: ${userMessage}\n\nProvide information related to vendor management, supply chain, performance metrics, or rating systems.`;
+                    
+                    const result = await model.generateContent(prompt);
+                    const response = await result.response;
+                    const text = response.text();
+                    
+                    console.log('Received response from Gemini API');
+                    
+                    // Remove typing indicator
+                    const typingElement = document.querySelector('.typing');
+                    if (typingElement) typingElement.remove();
+                    
+                    // Add bot response to chat
+                    addMessage(text, 'bot');
+                } catch (error) {
+                    console.error('Message Error:', error);
+                    // Remove typing indicator if it exists
+                    const typingElement = document.querySelector('.typing');
+                    if (typingElement) typingElement.remove();
+                    
+                    // Use fallback response
+                    const botResponse = generateResponse(userMessage);
+                    addMessage(botResponse, 'bot');
+                }
+            } else {
+                // Use fallback response system
+                setTimeout(() => {
+                    // Remove typing indicator
+                    const typingElement = document.querySelector('.typing');
+                    if (typingElement) typingElement.remove();
+                    
+                    const botResponse = generateResponse(userMessage);
+                    addMessage(botResponse, 'bot');
+                }, 1000);
+            }
         }
         
-        console.log('Testing API connection...');
-        const result = await model.generateContent("Hello, this is a test message.");
-        console.log('API test response:', result);
-        
-        apiAvailable = true;
-        statusIndicator.className = 'status-indicator status-green';
-        statusText.textContent = 'API Connected - Using Gemini AI';
-    } catch (error) {
-        console.error('API Check Error:', error);
-        apiAvailable = false;
-        statusIndicator.className = 'status-indicator status-red';
-        statusText.textContent = 'API Unavailable - Using Fallback Mode';
-    }
-}
-
-// Call this function when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Existing code...
-    
-    // Check API connection
-    checkApiConnection();
-});
-
-// Chat functionality with Gemini API SDK
-async function sendMessage() {
-    const userInput = document.getElementById('user-input');
-    const userMessage = userInput.value.trim();
-    
-    if (userMessage === '') return;
-    
-    // Add user message to chat
-    addMessage(userMessage, 'user');
-    userInput.value = '';
-    
-    // Show typing indicator
-    const typingIndicator = addMessage("Thinking...", 'bot', 'typing');
-    
-    if (apiAvailable) {
-        try {
-            console.log('Sending message to Gemini API...');
-            const prompt = `You are a helpful assistant for Fluid Controls specializing in vendor rating and analysis. Respond to this query: ${userMessage}\n\nProvide information related to vendor management, supply chain, performance metrics, or rating systems.`;
-            
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
-            
-            console.log('Received response from Gemini API');
-            
-            // Remove typing indicator
-            const typingElement = document.querySelector('.typing');
-            if (typingElement) typingElement.remove();
-            
-            // Add bot response to chat
-            addMessage(text, 'bot');
-        } catch (error) {
-            console.error('Message Error:', error);
-            // Remove typing indicator if it exists
-            const typingElement = document.querySelector('.typing');
-            if (typingElement) typingElement.remove();
-            
-            // Use fallback response
-            const botResponse = generateResponse(userMessage);
-            addMessage(botResponse, 'bot');
-        }
-    } else {
-        // Use fallback response system
-        setTimeout(() => {
-            // Remove typing indicator
-            const typingElement = document.querySelector('.typing');
-            if (typingElement) typingElement.remove();
-            
-            const botResponse = generateResponse(userMessage);
-            addMessage(botResponse, 'bot');
-        }, 1000);
-    }
-}
         // Session check (redirect to login if not authenticated)
         function checkSession() {
             // In a real app, you'd verify a token or session cookie
@@ -715,20 +744,6 @@ async function sendMessage() {
             sessionStorage.removeItem('authenticated');
             window.location.href = 'index.html';
         }
-
-        // Load saved theme from localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            }
-            
-            // Show home section by default
-            showSection('home-section');
-            
-            // If home is the default section, embed Power BI on page load
-            setTimeout(embedPowerBI, 500);
-        });
         
         function showSection(sectionId) {
             // Hide all sections
@@ -755,159 +770,8 @@ async function sendMessage() {
                 document.getElementById('chat-btn').classList.add('active');
             } else if (sectionId === 'colab-section') {
                 document.getElementById('colab-btn').classList.add('active');
-                // If no notebook is selected, set default
-                if (!document.getElementById('notebook-select').value) {
-                    document.getElementById('notebook-select').value = 'vendor-comparison';
-                }
-                setTimeout(loadColabNotebook, 100);
-            }
-        }
-        
-        // Colab Notebook Embedding
-        function loadColabNotebook() {
-            const container = document.getElementById('colab-container');
-            const notebookType = document.getElementById('notebook-select').value;
-            
-            if (!notebookType) {
-                container.innerHTML = `
-                    <div class="loading-indicator">
-                        <i class="fas fa-chart-line"></i> Please select an analysis type
-                    </div>
-                `;
-                return;
-            }
-            
-            // Show loading indicator
-            container.innerHTML = `
-                <div class="loading-indicator">
-                    <i class="fas fa-spinner fa-spin"></i> Loading Colab notebook analysis...
-                </div>
-            `;
-            
-            // Define the notebook URLs for each analysis type
-            // Replace these URLs with your actual Colab notebook URLs
-            const notebookUrls = {
-                'vendor-comparison': 'https://colab.research.google.com/drive/YOUR_NOTEBOOK_ID_1',
-                'trend-analysis': 'https://colab.research.google.com/drive/YOUR_NOTEBOOK_ID_2',
-                'quality-metrics': 'https://colab.research.google.com/drive/YOUR_NOTEBOOK_ID_3',
-                'custom': 'https://colab.research.google.com/drive/YOUR_NOTEBOOK_ID_4'
-            };
-            
-            const url = notebookUrls[notebookType];
-            
-            // Create iframe for Colab notebook
-            const iframe = document.createElement('iframe');
-            iframe.className = 'notebook-embed';
-            iframe.title = 'Colab Notebook Analysis';
-            iframe.src = url;
-            
-            // Clear container and add iframe
-            container.innerHTML = '';
-            container.appendChild(iframe);
-            
-            // If using demo URLs, show a demo placeholder instead
-            if (url.includes('YOUR_NOTEBOOK_ID')) {
-                // Show demo content based on notebook type
-                if (notebookType === 'vendor-comparison') {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 20px;">
-                            <i class="fas fa-chart-bar" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
-                            <h3>Vendor Comparison Analysis</h3>
-                            <p>This is a placeholder for your Colab notebook analysis.</p>
-                            <div style="max-width: 800px; margin: 30px auto; background: var(--bg-secondary); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px var(--shadow);">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <thead>
-                                        <tr style="border-bottom: 2px solid var(--border);">
-                                            <th style="padding: 10px; text-align: left;">Vendor</th>
-                                            <th style="padding: 10px; text-align: right;">Quality</th>
-                                            <th style="padding: 10px; text-align: right;">Delivery</th>
-                                                                                        <th style="padding: 10px; text-align: right;">Delivery</th>
-                                            <th style="padding: 10px; text-align: right;">Price</th>
-                                            <th style="padding: 10px; text-align: right;">Service</th>
-                                            <th style="padding: 10px; text-align: right;">Overall</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr style="border-bottom: 1px solid var(--border);">
-                                            <td style="padding: 10px; text-align: left;">ABC Supplies</td>
-                                            <td style="padding: 10px; text-align: right;">87</td>
-                                            <td style="padding: 10px; text-align: right;">92</td>
-                                            <td style="padding: 10px; text-align: right;">78</td>
-                                            <td style="padding: 10px; text-align: right;">85</td>
-                                            <td style="padding: 10px; text-align: right; font-weight: bold;">86</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border);">
-                                            <td style="padding: 10px; text-align: left;">XYZ Manufacturing</td>
-                                            <td style="padding: 10px; text-align: right;">82</td>
-                                            <td style="padding: 10px; text-align: right;">68</td>
-                                            <td style="padding: 10px; text-align: right;">90</td>
-                                            <td style="padding: 10px; text-align: right;">74</td>
-                                            <td style="padding: 10px; text-align: right; font-weight: bold;">79</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border);">
-                                            <td style="padding: 10px; text-align: left;">Global Components</td>
-                                            <td style="padding: 10px; text-align: right;">65</td>
-                                            <td style="padding: 10px; text-align: right;">72</td>
-                                            <td style="padding: 10px; text-align: right;">95</td>
-                                            <td style="padding: 10px; text-align: right;">68</td>
-                                            <td style="padding: 10px; text-align: right; font-weight: bold;">73</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 10px; text-align: left;">Tech Solutions</td>
-                                            <td style="padding: 10px; text-align: right;">93</td>
-                                            <td style="padding: 10px; text-align: right;">88</td>
-                                            <td style="padding: 10px; text-align: right;">70</td>
-                                            <td style="padding: 10px; text-align: right;">89</td>
-                                            <td style="padding: 10px; text-align: right; font-weight: bold;">87</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <p><em>In a production environment, this would be an interactive chart from your Colab notebook.</em></p>
-                        </div>
-                    `;
-                } else if (notebookType === 'trend-analysis') {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 20px;">
-                            <i class="fas fa-chart-line" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
-                            <h3>Trend Analysis</h3>
-                            <p>This is a placeholder for your Colab notebook trend analysis.</p>
-                            <div style="max-width: 800px; margin: 30px auto; background: var(--bg-secondary); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px var(--shadow);">
-                                <img src="https://via.placeholder.com/800x400?text=Trend+Analysis+Chart" style="max-width: 100%; border-radius: 8px;">
-                            </div>
-                            <p><em>In a production environment, this would be an interactive chart from your Colab notebook.</em></p>
-                        </div>
-                    `;
-                } else if (notebookType === 'quality-metrics') {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 20px;">
-                            <i class="fas fa-check-circle" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
-                            <h3>Quality Metrics Deep Dive</h3>
-                            <p>This is a placeholder for your Colab notebook quality metrics analysis.</p>
-                            <div style="max-width: 800px; margin: 30px auto; background: var(--bg-secondary); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px var(--shadow);">
-                                <img src="https://via.placeholder.com/800x400?text=Quality+Metrics+Chart" style="max-width: 100%; border-radius: 8px;">
-                            </div>
-                            <p><em>In a production environment, this would be an interactive chart from your Colab notebook.</em></p>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 20px;">
-                            <i class="fas fa-cogs" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></i>
-                            <h3>Custom Analysis</h3>
-                            <p>This is a placeholder for your custom Colab notebook analysis.</p>
-                            <div style="max-width: 800px; margin: 30px auto; background: var(--bg-secondary); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px var(--shadow);">
-                                <p>To embed your Colab notebook:</p>
-                                <ol style="text-align: left; margin-left: 20px;">
-                                    <li>Open your notebook in Google Colab</li>
-                                    <li>Share your notebook (File > Share)</li>
-                                    <li>Get the notebook URL</li>
-                                    <li>Replace the placeholder URL in the code</li>
-                                </ol>
-                            </div>
-                        </div>
-                    `;
-                }
+                // Auto-load the Gradio app when section is shown
+                setTimeout(loadGradioApp, 100);
             }
         }
         
@@ -928,31 +792,6 @@ async function sendMessage() {
                     </div>
                 </div>
             `;
-        }
-        
-        // Chat functionality
-        function sendMessage() {
-            const userInput = document.getElementById('user-input');
-            const userMessage = userInput.value.trim();
-            
-            if (userMessage === '') return;
-            
-            // Add user message to chat
-            addMessage(userMessage, 'user');
-            userInput.value = '';
-            
-            // Show typing indicator
-            const typingIndicator = addMessage("Thinking...", 'bot', 'typing');
-            
-            // Simulate response delay
-            setTimeout(() => {
-                // Remove typing indicator
-                document.querySelector('.typing').remove();
-                
-                // Generate a response
-                const botResponse = generateResponse(userMessage);
-                addMessage(botResponse, 'bot');
-            }, 1000);
         }
         
         function addMessage(text, sender, className = '') {
