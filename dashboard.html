@@ -575,11 +575,11 @@
     
     <script>
         // Google Generative AI SDK setup
-        const GEMINI_API_KEY = 'AIzaSyB1lu1c7yQRgdHn4NemfE-mNLUrK3Gy68s';
+        const GEMINI_API_KEY = 'AIzaSyA15s3bWA7wnZ-5bXoSAH6O5ZtMosc4jjA';
         let apiAvailable = false;
         let genAI;
         let model;
-
+    
         // Initialize the SDK
         function initializeGeminiAPI() {
             try {
@@ -593,7 +593,7 @@
                 return false;
             }
         }
-
+    
         // Check API connection
         async function checkApiConnection() {
             const statusIndicator = document.getElementById('api-indicator');
@@ -608,6 +608,11 @@
                 const result = await model.generateContent("Hello, this is a test message.");
                 console.log('API test response:', result);
                 
+                // Check if the response is valid (assuming result.response.text contains the generated content)
+                if (!result || !result.response || !result.response.text) {
+                    throw new Error('Invalid or empty API response');
+                }
+                
                 apiAvailable = true;
                 statusIndicator.className = 'status-indicator status-green';
                 statusText.textContent = 'API Connected - Using Gemini AI';
@@ -618,6 +623,7 @@
                 statusText.textContent = 'API Unavailable - Using Fallback Mode';
             }
         }
+
 
         // Load Gradio App
         function loadGradioApp() {
